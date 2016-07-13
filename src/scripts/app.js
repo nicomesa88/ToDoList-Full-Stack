@@ -1,15 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Backbone from 'backbone'
+import ListView from './models'
 
 const app = function() {
 
-	const Header = React.createClass({
-		render: () => {
-			return <h1>YOLO</h1>
-		}
-	})
+    var ListModel = Backbone.Model.extend ({
+        defaults: {
+            status: 'incomplete'
+        }
+    })
 
-	ReactDOM.render(<Header/>,document.querySelector('.container'))
+    var ListCollection = Backbone.Collection.extend ({
+        model: ListModel
+    })
+
+    ReactDOM.render(<ListView listColl = {new ListCollection()} />, document.querySelector('.container'))
 }
 
 app()

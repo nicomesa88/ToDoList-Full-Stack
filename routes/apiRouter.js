@@ -4,13 +4,36 @@ let helpers = require('../config/helpers.js')
 
 let User = require('../db/schema.js').User
 let Post = require('../db/schema.js').Post
+let Task = require('../db/schema.js').Task
+
+//ToDo
+
+apiRouter.get('/tasks', function(req, res){
+  Taks.find(req.query, function(err, results){
+    res.json(results)
+  })
+})
+
+//create one
+apiRouter.post('/tasks', function(req, res){
+    console.log('post req received')
+    var newTask = new Task( req.body )
+    newTask.save(function(err){
+        if (err) console.log(err)
+        else res.json(newTask)
+    })
+})
+
+
+// -------------------------------------------------
+
 
 
 apiRouter
   //fetch many
   .get('/posts', function(req, res, next){
     Post.find(req.query, function(err, results){
-      if(err) return res.json(err) 
+      if(err) return res.json(err)
       res.json(results)
     })
   })
@@ -18,8 +41,8 @@ apiRouter
   .post('/posts', function(req, res, next){
     let newPost = new Post(req.body)
     newPost.save(function(err){
-      if(err) return res.json(err) 
- 
+      if(err) return res.json(err)
+
       res.json(newPost)
     })
   })
@@ -28,7 +51,7 @@ apiRouter
   //fetch one
   .get('/posts/:_id', function(req, res, next){
     Post.findById(req.params._id, function(err, record){
-      if(err || !record) return res.json(err)  
+      if(err || !record) return res.json(err)
       res.json(record)
     })
   })
@@ -37,7 +60,7 @@ apiRouter
     Post.findById(req.params._id, function(err,record) {
       let recordWithUpdates = helpers.updateFields(record,req.body)
       recordWithUpdates.save(function(err){
-        if(err || !record) return res.json(err) 
+        if(err || !record) return res.json(err)
         res.json(record)
       })
     })
@@ -50,13 +73,13 @@ apiRouter
         msg: `record ${req.params._id} successfully deleted`,
         _id: req.params._id
       })
-    })  
+    })
   })
 
   apiRouter
     .get('/users', function(req, res, next){
       User.find(req.query , "-password", function(err, results){
-        if(err) return res.json(err) 
+        if(err) return res.json(err)
         res.json(results)
       })
     })
@@ -64,7 +87,7 @@ apiRouter
   apiRouter
     .get('/users/:_id', function(req, res, next){
       User.findById(req.params._id, "-password", function(err, record){
-        if(err || !record ) return res.json(err) 
+        if(err || !record ) return res.json(err)
         res.json(record)
       })
     })
@@ -73,7 +96,7 @@ apiRouter
         if(err || !record) return res.json(err)
         let recordWithUpdates = helpers.updateFields(record, req.body)
         recordWithUpdates.save(function(err){
-          if(err) return res.json(err) 
+          if(err) return res.json(err)
           res.json(recordWithUpdates)
         })
       })
@@ -85,7 +108,7 @@ apiRouter
           msg: `record ${req.params._id} successfully deleted`,
           _id: req.params._id
         })
-      })  
+      })
     })
 
 module.exports = apiRouter
